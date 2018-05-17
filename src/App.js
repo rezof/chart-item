@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Styled from "styled-components";
+import { Dropdown, Quantity } from "./components";
 
 import "./App.css";
 
@@ -42,20 +43,32 @@ const ItemDetails = Styled.div`
 `;
 
 const Button = Styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
   width: 30%;
   color: #6bdbb8;
-  text-align: center;
   border: 1px solid #6bdbb8;
-  padding: 10px 12px;
+  min-height: 35px;
   margin-right: 10px;
+  background: #fff;
 
   &:before{
-    content: 'x';
-    border-right: 1px solid #6bdbb8;
-    padding-right: 5px;
-    margin-right: 5px;
+    content: '';
+    background-image: url(/cross-out-mark.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    min-height: 12px;
+    min-width: 12px;
   }
+`;
+
+const ButtonText = Styled.span`
+  border-left: 1px solid #6bdbb8;
+  padding-left: 5px;
+  margin-left: 5px;
 `;
 
 const TotalWrapper = Styled.div`
@@ -77,13 +90,12 @@ const ItemValue = Styled.p`
   color: #8f8f8f;
 `;
 
-/* */
 const DetailItemWrapper = Styled.div`
-flex: 1;
-min-width: 50%;
-display: flex;
-flex-direction: column;
-${props => (props.secondRow ? "justify-content: flex-end;" : "")}
+  flex: 1;
+  min-width: 50%;
+  display: flex;
+  flex-direction: column;
+  ${props => (props.flexEnd ? "justify-content: flex-end;" : "")}
 `;
 
 const TotalLabel = Styled(ItemLabel)`
@@ -95,41 +107,57 @@ const TotalValue = Styled(ItemValue)`
   flex: 1;
 `;
 
-const DetailItem = ({ label, value, ...rest }) => {
-  return (
-    <DetailItemWrapper {...rest}>
-      <ItemLabel>{label}</ItemLabel>
-      <ItemValue>{value}</ItemValue>
-    </DetailItemWrapper>
-  );
-};
-
 class App extends Component {
+  state = { quantity: 1, price: 10 };
+
+  renderItemDetails() {
+    const { quantity, price } = this.state;
+    return (
+      <React.Fragment>
+        <DetailItemWrapper>
+          <ItemLabel>farbe</ItemLabel>
+          <ItemValue>rot</ItemValue>
+        </DetailItemWrapper>
+        <DetailItemWrapper>
+          <ItemLabel>grosse</ItemLabel>
+          <Dropdown
+            selected={11}
+            data={[7, 8, 9, 10, 11, 12, 13]}
+            onChange={() => {}}
+          />
+        </DetailItemWrapper>
+        <DetailItemWrapper flexEnd>
+          <ItemLabel>anzahl</ItemLabel>
+          <Quantity
+            value={quantity}
+            onChange={qte => this.setState({ quantity: qte })}
+          />
+        </DetailItemWrapper>
+        <DetailItemWrapper flexEnd>
+          <ItemLabel>press</ItemLabel>
+          <ItemValue>{`${price} $`}</ItemValue>
+        </DetailItemWrapper>
+      </React.Fragment>
+    );
+  }
   render() {
-    const items = [
-      { label: "farbe", value: "rot" },
-      { label: "grosse", value: "11" },
-      { label: "anzahl", value: "1" },
-      { label: "press", value: "10,00$" }
-    ];
+    const { price, quantity } = this.state;
     return (
       <Wrapper>
         <ItemWrapper>
           <TopSection>
             <Image src="/150x150.png" />
-            <ItemDetails>
-              {items.map((item, i) => {
-                const secondRow = i >= items.length / 2;
-                console.log("second row", secondRow, i);
-                return <DetailItem key={i} secondRow={secondRow} {...item} />;
-              })}
-            </ItemDetails>
+            <ItemDetails>{this.renderItemDetails()}</ItemDetails>
           </TopSection>
           <BottomSection>
-            <Button>loschen</Button>
+            <Button>
+              <ButtonText>loschen</ButtonText>
+            </Button>
             <TotalWrapper>
               <TotalLabel>gesamt</TotalLabel>
-              <TotalValue>10,00 $</TotalValue>
+              <TotalValue>{`${parseFloat(price * quantity).toFixed(
+                2
+              )} $`}</TotalValue>
             </TotalWrapper>
           </BottomSection>
         </ItemWrapper>
