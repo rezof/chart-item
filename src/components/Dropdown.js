@@ -66,41 +66,42 @@ export default class DropDown extends React.Component {
     if (
       this._contentRef &&
       !this._contentRef.contains(e.target) &&
-      this.state.open
+      this.state.isOpen
     ) {
-      this.setState({ open: false });
+      this.setState({ isOpen: false });
     }
   }
 
-  _itemSelected(e, selectedItem) {
+  handleItemSelection(e, selectedItem) {
     e.stopPropagation();
     const { onChange } = this.props;
-    this.setState({ selectedItem, open: false }, () => {
+    this.setState({ selectedItem, isOpen: false }, () => {
       if (typeof onChange === "function") {
+        // in a real world app, should use proptypes..
         onChange(selectedItem);
       }
     });
   }
 
-  openDropdown(e) {
+  isOpenDropdown(e) {
     e.stopPropagation();
-    this.setState({ open: true });
+    this.setState({ isOpen: true });
   }
 
   render() {
-    const { className, data } = this.props;
     const { selectedItem } = this.state;
+    const { className, data } = this.props;
     return (
       <Container
-        innerRef={ref => (this._contentRef = ref)}
         className={className}
-        onClick={e => this.openDropdown(e)}
+        innerRef={ref => (this._contentRef = ref)}
+        onClick={e => this.isOpenDropdown(e)}
       >
         <ValueText>{selectedItem}</ValueText>
-        {this.state.open && (
+        {this.state.isOpen && (
           <ItemsWrapper>
             {data.map(item => (
-              <Item key={item} onClick={e => this._itemSelected(e, item)}>
+              <Item key={item} onClick={e => this.handleItemSelection(e, item)}>
                 {item}
               </Item>
             ))}

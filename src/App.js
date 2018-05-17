@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import Styled from "styled-components";
 import { Dropdown, Quantity } from "./components";
 
-import "./App.css";
-
 const Wrapper = Styled.div`
   display: flex;
   align-items: center;
@@ -121,9 +119,11 @@ class App extends Component {
         <DetailItemWrapper>
           <ItemLabel>grosse</ItemLabel>
           <Dropdown
-            selected={11}
             data={[7, 8, 9, 10, 11, 12, 13]}
-            onChange={() => {}}
+            selected={11}
+            onChange={size => {
+              console.log("size chnaged", size);
+            }}
           />
         </DetailItemWrapper>
         <DetailItemWrapper flexEnd>
@@ -140,6 +140,7 @@ class App extends Component {
       </React.Fragment>
     );
   }
+
   render() {
     const { price, quantity } = this.state;
     return (
@@ -150,7 +151,7 @@ class App extends Component {
             <ItemDetails>{this.renderItemDetails()}</ItemDetails>
           </TopSection>
           <BottomSection>
-            <Button>
+            <Button onClick={() => console.log("remove item ?")}>
               <ButtonText>loschen</ButtonText>
             </Button>
             <TotalWrapper>
