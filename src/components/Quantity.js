@@ -30,8 +30,9 @@ export default class Quantity extends React.Component {
   }
 
   render() {
+    const { className } = this.props;
     return (
-      <Wrapper>
+      <Wrapper className={className}>
         <Button onClick={this.changeQuantity.bind(this, -1)}>-</Button>
         <Value>{this.props.value || 1}</Value>
         <Button onClick={this.changeQuantity.bind(this, 1)}>+</Button>
